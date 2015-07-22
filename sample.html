@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+    <script type="text/javascript" src="gridify.js"></script>
+    <title></title>
+    <style type="text/css">
+    html,
+    body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+    }
+    .redbox, .greenbox, .bluebox
+    {        
+        width: 100%;
+        height: 100%;
+    }
+    .redbox
+    {        
+        background-color: red;
+    }
+    .bluebox
+    {        
+        background-color: blue;
+    }
+    .greenbox
+    {        
+        background-color: green;
+    }
+    </style>
+    <meta charset="utf-8" />
+    <script type="text/javascript">
+    window.addEventListener('load', function() {
+        /* you need to call the gridify function on your top-level grid.
+           Don't worry about nested grids. They will be automatically taken care of:
+           any element with a data-grid-coldef and/or data-grid-rowdef will be gridified. 
+        */
+        gridify(document.getElementById("gridExample"));
+
+    }, false)
+    </script>
+</head>
+
+<body>
+    <div id="gridExample" data-grid-rowdef="1*, 2*, 2*, 50%" data-grid-coldef="1*, 2*, 3*">        
+    <!-- A grid is defined with 4 rows. Last row occupies 50% of the grid, while second and third rows are twice as high as first row.
+    It has three columns, with the second one being twice as wide as the first one and third one three times as wide as first one.
+    -->
+        <img src="images/2.jpg" /> <!-- row and col are 0 by default, and rowspan and colspan are 1 -->
+        <img src="images/3.jpg" data-grid-row="1" data-grid-col="1" data-grid-rowspan="1" data-grid-col="1"/>
+        <img src="images/1.jpg" data-grid-row="1" data-grid-rowspan="2" data-grid-colspan="2" />
+        
+        <!-- You can have as many nested grids as you want. Any element with data-grid-coldef and/or data-grid-rowdef attribute is recognized as a grid object -->
+        <div data-grid-rowdef='1*, 1*, 1*' data-grid-coldef='1*, 1*, 1*' data-grid-col="2" data-grid-row="0">
+            <div class="greenbox" data-grid-colspan="2"></div> 
+            <div class="bluebox" data-grid-col="1" data-grid-colspan="2" data-grid-row="1"></div> 
+            <div class="redbox" data-grid-row="2"></div> 
+        </div>
+    </div>
+</body>
+
+</html>
