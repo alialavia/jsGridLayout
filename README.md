@@ -48,12 +48,13 @@ Take a look at the example:
         <div data-grid-rowdef='1*, 1*, 1*' 
              data-grid-coldef='1*, 1*, 1*' 
              data-grid-col="2" data-grid-row="0"> 
+             
             <div class="greenbox" data-grid-colspan="2"></div> 
             
-            <div class="bluebox" data-grid-col="1" 
-            data-grid-colspan="2" data-grid-row="1"></div> 
+            <div class="bluebox" data-grid-col="1" data-grid-colspan="2" data-grid-row="1"></div> 
             
             <div class="redbox" data-grid-row="2"></div> 
+            
         </div> 
     </div>
 
