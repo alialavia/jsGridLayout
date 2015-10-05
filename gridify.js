@@ -7,6 +7,7 @@
     are placed. The lists represent rows' height and cols' width repectively. 
    */
 
+/* Helpers */
 // Make sure endsWith is implemented
 if (!String.prototype.endsWith) {
     String.prototype.endsWith = function(searchString, position) {
@@ -19,6 +20,27 @@ if (!String.prototype.endsWith) {
         return lastIndex !== -1 && lastIndex === position;
     };
 }
+
+// Make sure repeat is implemented
+if (!Array.prototype.repeat) {
+    Array.prototype.repeat = function(n) {        
+        if (n === undefined || n < 0) 
+            return null;
+        var temp = [];
+        for (var i = 0;i < n; i++)
+            temp = temp.concat(this);
+        
+        return temp;
+    };
+}
+
+// repeat and join
+if (!Array.prototype.raj) {
+    Array.prototype.raj = function(n) {                        
+        return this.repeat(n).join();
+    };
+}
+
 
 function layout(row_defs, col_defs) {
     var total_width = 100,
@@ -73,21 +95,18 @@ function gridify(el) {
     // stores row and col definitions
     var row_defs = [],
         col_defs = [];
-    //var shadow = el.createShadowRoot();
-    el.style.width = "100%";
-    el.style.height = "100%";
-    el.style.position = 'absolute';
-    el.style.margin = "0";
-    el.style.boxSizing = "border-box";
 
     // read row and col definitions
     var temp = (el.dataset.gridRowdef || '').split(',');
-    for (var r in temp)
-        row_defs.push(temp[r].trim() || '1*');
+
+    for (var i = 0; i<temp.length; i++)
+    {
+        row_defs.push(temp[i].trim() || '1*');
+    }
 
     temp = (el.dataset.gridColdef || '').split(',');
-    for (var c in temp)
-        col_defs.push(temp[c].trim() || '1*');
+    for (var i = 0; i<temp.length; i++)
+        col_defs.push(temp[i].trim() || '1*');
 
     layout(row_defs, col_defs);
 
@@ -125,6 +144,14 @@ function gridify(el) {
     // layout all elements
     for (var i = 0; i < el.children.length; i++)
         define_grid_element_def(el.children[i]);
+
+    // Finally wrap everything in a relative div
+    var mainWrapperDiv = document.createElement('div');
+    mainWrapperDiv.style.position = 'relative';
+    mainWrapperDiv.style.width = '100%';
+    mainWrapperDiv.style.height = '100%';
+    mainWrapperDiv.innerHTML = el.innerHTML;
+    el.innerHTML = mainWrapperDiv.outerHTML;
 }
 
 function findGridElementPosition(row, col, rowSpan, colSpan, row_defs, col_defs) {
