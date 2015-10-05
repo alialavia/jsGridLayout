@@ -92,7 +92,7 @@ function gridify(el) {
     layout(row_defs, col_defs);
 
     var define_grid_element_def = function(child_el) {
-        // if the element itself is a grid, first calculate the its layout
+        // if the element itself is a grid, first calculate its layout
         if (!((child_el.dataset.gridRowdef === undefined) ||
                 (child_el.dataset.gridColdef === undefined)))
             gridify(child_el);
@@ -105,7 +105,9 @@ function gridify(el) {
         // then find its size and position relative to its parent grid
         var sizePosition = findGridElementPosition(row, col, rowSpan, colSpan, row_defs, col_defs);
 
-        // define a wrapper div around the element         
+        /* define a wrapper div around the element       
+        so that the target styles don't get overriden
+        */  
         var wrapperDiv = document.createElement('div');
 
         wrapperDiv.style.position = 'absolute';
@@ -127,29 +129,42 @@ function gridify(el) {
 
 function findGridElementPosition(row, col, rowSpan, colSpan, row_defs, col_defs) {
 
-    // TODO: check for index-overflow and generate layout warning
+    var error_msg = "Error on layouting element in row " + row + " and column " + col +". Layout failed on calculating ";
+    if (row < 0 || row >= row_defs.length)
+        error_msg += "row position";
+    else if (col < 0 || col >= col_defs.length)
+        error_msg += "column position";
+    else if ((row + rowSpan - 1) < 0 || (row + rowSpan - 1) >= row_defs.length)
+        error_msg += "cell height (due to rowSpan/row error)";
+    else if ((col + colSpan - 1) < 0 || (col + colSpan - 1) >= col_defs.length)
+        error_msg += "cell width (due to colSpan/col error)";
+    else
+    {        
+        var left = 0,
+            top = 0,
+            width = 0,
+            height = 0,
+            i = 0;
 
-    var left = 0,
-        top = 0,
-        width = 0,
-        height = 0;
+        for (i = 0; i < col; i++)
+            left += col_defs[i];
 
-    for (var i = 0; i < col; i++)
-        left += col_defs[i];
+        for (i = 0; i < row; i++)
+            top += row_defs[i];
 
-    for (var i = 0; i < row; i++)
-        top += row_defs[i];
+        for (i = 0; i < colSpan; i++)
+            width += col_defs[col + i];
 
-    for (var i = 0; i < colSpan; i++)
-        width += col_defs[col + i];
+        for (i = 0; i < rowSpan; i++) {
+            height += row_defs[row + i];
+        }
 
-    for (var i = 0; i < rowSpan; i++) {
-        height += row_defs[row + i];
-    }
-    return {
-        left: left,
-        top: top,
-        width: width,
-        height: height
-    };
+        return {
+            left: left,
+            top: top,
+            width: width,
+            height: height
+        };
+    }        
+    throw new RangeError(error_msg + ".");
 }
